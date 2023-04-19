@@ -1,0 +1,35 @@
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/gpu_scraper_2.13-0.1.0-SNAPSHOT.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Init$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/Init$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Megekko.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Megekko.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Scraper.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Scraper.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Scraper$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Scraper$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Alternate$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Alternate$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Product$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Product$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Amazon$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Amazon$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Scraper$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Scraper$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Amazon.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Amazon.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Product.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Product.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Stores.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Stores.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Megekko$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Megekko$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	com/services/Alternate.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/com/services/Alternate.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Init.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes/Init.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

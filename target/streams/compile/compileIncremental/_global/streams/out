@@ -1,0 +1,69 @@
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] IncrementalCompile -----------[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncrementalCompile.incrementalCompile[0m
+[0m[[0m[0mdebug[0m] [0m[0mprevious = Stamps for: 14 products, 2 sources, 4 libraries[0m
+[0m[[0m[0mdebug[0m] [0m[0mcurrent source = Set(${BASE}/src/main/scala/Main.scala, ${BASE}/src/main/scala/services/Scraper.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0m> initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/src/main/scala/services/Scraper.scala), unmodified = ...),Set(),Set(),API Changes: Set())[0m
+[0m[[0m[0mdebug[0m] [0m[0m[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial source changes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	removed: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	added: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	modified: Set(${BASE}/src/main/scala/services/Scraper.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set(com.services.Amazon, com.services.Stores, com.services.Scraper, com.services.Alternate, com.services.Megekko, com.services.Product)[0m
+[0m[[0m[0mdebug[0m] [0m[0mSources indirectly invalidated by:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	product: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	binary dep: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	external source: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated classes: Set(com.services.Amazon, com.services.Stores, com.services.Scraper, com.services.Alternate, com.services.Megekko, com.services.Product)[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated sources:Set(${BASE}/src/main/scala/services/Scraper.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: com.services.Amazon, com.services.Stores, com.services.Scraper, com.services.Alternate, com.services.Megekko, com.services.Product[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding com.services.Alternate by com.services.Stores[0m
+[0m[[0m[0mdebug[0m] [0m[0mIncluding com.services.Megekko by com.services.Stores[0m
+[0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 1[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.8.0:compile for Scala 2.13.10[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 70fc8fae for Scala compiler version 2.13.10[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.10/scala-library-2.13.10.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jsoup/jsoup/1.15.3/jsoup-1.15.3.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-effect_2.13/3.4.8/cats-effect_2.13-3.4.8.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-effect-kernel_2.13/3.4.8/cats-effect-kernel_2.13-3.4.8.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-effect-std_2.13/3.4.8/cats-effect-std_2.13-3.4.8.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.13/2.9.0/cats-core_2.13-2.9.0.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.13/2.9.0/cats-kernel_2.13-2.9.0.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from com.services.Product...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: com.services.Product[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(com.services.Product)[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of Init: [UsedName(apply,[Default]), UsedName(Product,[Default])][0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(com.services.Product,ModifiedNames(changes = UsedName(copy,[Default]), UsedName(inStock,[Default]), UsedName(com;services;Product;init;,[Default]), UsedName(curried,[Default]), UsedName(apply,[Default]), UsedName(unapply,[Default]), UsedName(Product,[Default]), UsedName(tupled,[Default]), UsedName(copy$default$5,[Default]))) invalidates 2 classes due to The com.services.Product has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(copy,[Default]), UsedName(inStock,[Default]), UsedName(com;services;Product;init;,[Default]), UsedName(curried,[Default]), UsedName(apply,[Default]), UsedName(unapply,[Default]), UsedName(Product,[Default]), UsedName(tupled,[Default]), UsedName(copy$default$5,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(com.services.Product)[0m
+[0m[[0m[0mdebug[0m] [0m[0m  > [0m
+[0m[[0m[0mdebug[0m] [0m[0m  > by member reference: Set(Init)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mNew invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Init[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: Init[0m
+[0m[[0m[0mdebug[0m] [0m[0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0mFinal step, transitive dependencies:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Set(Init)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated classes: Init[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 0.85051125 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: Init[0m
+[0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 2[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.8.0:compile for Scala 2.13.10[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 46855d0f for Scala compiler version 2.13.10[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.10/scala-library-2.13.10.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/Users/bertmeeuws/Desktop/Projects/gpu_scraper/target/scala-2.13/classes:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/jsoup/jsoup/1.15.3/jsoup-1.15.3.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-effect_2.13/3.4.8/cats-effect_2.13-3.4.8.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-effect-kernel_2.13/3.4.8/cats-effect-kernel_2.13-3.4.8.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-effect-std_2.13/3.4.8/cats-effect-std_2.13-3.4.8.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.13/2.9.0/cats-core_2.13-2.9.0.jar:/Users/bertmeeuws/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.13/2.9.0/cats-kernel_2.13-2.9.0.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mNew invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: [0m
+[0m[[0m[0mdebug[0m] [0m[0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0mFinal step, transitive dependencies:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mNo classes were invalidated.[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 0.265164791 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m
