@@ -1,6 +1,7 @@
 package scala.auth
 
-import cats.{Applicative, Functor}
+import cats.effect.IO
+import cats.{Applicative, Functor, Monad}
 import dev.profunktor.auth._
 import dev.profunktor.auth.jwt._
 import pdi.jwt._
@@ -22,7 +23,7 @@ case object User extends Role
 
 
 object Jwt {
-  def createToken[F[_]:  Applicative: Functor](username: String): Option[String] = {
+  def createToken[F[_]:  Monad](username: String): Option[String] = {
     val claim = JwtClaim(content =
       s"""{"
          |username": "$username",
@@ -34,7 +35,14 @@ object Jwt {
 
     val jwt: F[JwtToken] = jwtEncode(claim, secret, algorithm)
 
-    println(jwt)
-    Some(jwt.toString)
+    import cats.implicits._
+
+    val token = for {
+      token <- jwt
+    } yield token.value
+
+    println(token)
+
+    Some("dsqd")
   }
 }
