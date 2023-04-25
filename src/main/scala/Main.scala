@@ -29,7 +29,6 @@ import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.headers._
 import org.http4s.implicits._
 import org.http4s.server._
-import org.http4s.server.blaze.BlazeServerBuilder
 
 
 
@@ -46,27 +45,23 @@ object Init extends IOApp {
 
   val products = Semigroup[List[Product]].combine(Scraper[Alternate.type](gpuName, url), Scraper[Megekko.type ](gpuName, url))
 
-  //println(products)
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val apis = Router(
-      "/api" -> storesRoutes[IO],
-      "/api" -> directorRoutes[IO]
-    ).orNotFound
+    /*
+        val apis = Router(
+          "/api" -> storesRoutes[IO],
+          "/api" -> directorRoutes[IO]
+        ).orNotFound
+    */
 
     EmberServerBuilder.default[IO]
-      .withHost(ipv4"0.0.0.0")
+      .withHost(host"0.0.0.0")
       .withPort(port"8080")
       .withHttpApp(allRoutesComplete[IO])
       .build
       .use(_ => IO.never)
       .as(ExitCode.Success)
+
+
   }
-
-
-
-
-
-
-
 }

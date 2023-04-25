@@ -31,7 +31,11 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-ember-server" % http4sVersion,
   "org.http4s" %% "http4s-dsl"          % http4sVersion,
   "org.http4s" %% "http4s-circe"        % http4sVersion,
-  "org.http4s" %% "http4s-blaze-server" % http4sVersion,
-  "org.http4s" %% "http4s-blaze-client" % http4sVersion
 )
+
+libraryDependencies += "com.auth0" % "java-jwt" % "4.2.1"
+
+val JwtVersion = "1.2.0"
+
+libraryDependencies += "dev.profunktor" %% "http4s-jwt-auth" % JwtVersion
 

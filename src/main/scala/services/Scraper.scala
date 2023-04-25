@@ -54,7 +54,7 @@ object Scraper {
   }
 
   implicit val amazonScraper: Scraper[Amazon.type ] = new Scraper[Amazon.type] {
-    override def getAllProducts(gpuName: String, url: String): List[Product] = ???
+    override def getAllProducts(gpuName: String, url: String): List[Product] = List()
   }
 
 
@@ -70,6 +70,7 @@ object Scraper {
 
     val isCurrentPageLast = doc.select("div.mt-2 > .text-center").text() match {
       case (s"$_-$max van $total resultaten") => if (max == total) true else false
+      case _ => true
     }
 
     if (isLastPage) {
