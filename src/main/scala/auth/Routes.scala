@@ -40,16 +40,16 @@ object Auth {
     HttpRoutes.of[F] {
       case req @ POST -> Root / "auth" / "login" => for {
         user <- req.as[User]
-        result <- login(user.username, user.password) match {
+        _ <- login(user.username, user.password) match {
           case Some(x) => Ok(x.asJson)
           case None => {
             println("testing")
             NotFound()
           }
         }
-        jwt <- Jwt.createToken[F](user.username) match {
+        jwt <- Jwt.createToken[F](user.username) flatMap {
           case Some(x) => Ok(s"""{"jwt": "${x}"}""").map(_.putHeaders(`Content-Type`(MediaType.application.json)))
-          case None => NotFound()
+          case None => InternalServerError()
         }
       } yield jwt
       case POST -> Root / "auth" / "register" => Ok("Register")

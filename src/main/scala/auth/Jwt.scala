@@ -23,12 +23,12 @@ case object User extends Role
 
 
 object Jwt {
-  def createToken[F[_]:  Monad](username: String): Option[String] = {
+  def createToken[F[_]:  Monad](username: String): F[Option[String]] = {
     val claim = JwtClaim(content =
-      s"""{"
-         |username": "$username",
-         |"role": "Admin",
-         |}""".stripMargin, expiration = Some((System.currentTimeMillis() / 1000 + 3600).toLong))
+      s"""{
+         "username": "$username",
+         "role": "Admin"
+         }""".stripMargin, expiration = Some((System.currentTimeMillis() / 1000 + 3600).toLong))
 
     val secret = JwtSecretKey("dzauhduhduhduhduauhdua")
     val algorithm = JwtAlgorithm.HS256
@@ -41,8 +41,6 @@ object Jwt {
       token <- jwt
     } yield token.value
 
-    println(token)
-
-    Some("dsqd")
+    token.map(Some(_))
   }
 }
