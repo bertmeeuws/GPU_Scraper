@@ -39,3 +39,6 @@ val JwtVersion = "1.2.0"
 
 libraryDependencies += "dev.profunktor" %% "http4s-jwt-auth" % JwtVersion
 
+libraryDependencies += "org.tpolecat" %% "doobie-core"      % "1.0.0-RC1"
+libraryDependencies += "org.tpolecat" %% "doobie-postgres"  % "1.0.0-RC1"
+

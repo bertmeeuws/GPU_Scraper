@@ -11,7 +11,7 @@ import scala.reflect.internal.util.NoSourceFile.content
 
 trait Jwt {
   def createToken(username: String): String
-  def validateToken(token: String): Option[String]
+  def validateToken(token: String): Boolean
   def getRole(token: String): Option[Role]
 }
 
