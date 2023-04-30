@@ -19,8 +19,11 @@ import org.http4s.server._
 import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.headers.`Content-Type`
 import org.http4s.MediaType
+import com.scala.services._
+import com.scala.repositories._
 
 
+import scala.repositories.interpreters.postgres.PostgresUsersRepositoryInterpreter
 import scala.util.Try
 
 
@@ -52,7 +55,19 @@ object Auth {
           case None => InternalServerError()
         }
       } yield jwt
-      case POST -> Root / "auth" / "register" => Ok("Register")
+      case req @ POST -> Root / "auth" / "register" => {
+        import scala.repositories.interpreters.postgres.PostgresUsersRepositoryInterpreter._
+        val userService: UserService[F] = UserService(PostgresUsersRepositoryInterpreter.userRepository)
+
+        for {
+          user <- req.as[User]
+          result <- userService.create(user.username, user.password) match {
+            case Right(x) => Ok(x.asJson)
+            case Left(x) => BadRequest(x.asJson)
+          }
+        } yield ()
+
+      }
     }
   }
 }

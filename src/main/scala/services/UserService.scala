@@ -1,3 +1,5 @@
+package com.scala.services
+
 import cats.implicits.toFlatMapOps
 import cats.{Applicative, Monad}
 import com.scala.repositories._
