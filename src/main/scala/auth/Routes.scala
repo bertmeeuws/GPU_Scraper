@@ -21,10 +21,12 @@ import org.http4s.headers.`Content-Type`
 import org.http4s.MediaType
 import com.scala.services._
 import com.scala.repositories._
+import com.scala.repositories.algebras.UserRepository
 
-
-import scala.repositories.interpreters.postgres.PostgresUsersRepositoryInterpreter
 import scala.util.Try
+import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters._
+import doobie.Transactor
+
 
 
 object Auth {
@@ -37,7 +39,16 @@ object Auth {
   implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
 
 
-  def authRoutes[F[_]: Concurrent]: HttpRoutes[F] = {
+
+
+  def authRoutes[F[_]: Concurrent: Monad: Async]: HttpRoutes[F] = {
+    val xa = Transactor.fromDriverManager[F](
+      "org.postgresql.Driver", // driver classname
+      "jdbc:postgresql:world", // connect URL (driver-specific)
+      "postgres", // user
+      "postgres" // password
+    )
+
     val dsl = Http4sDsl[F]
     import dsl._
     HttpRoutes.of[F] {
@@ -56,17 +67,26 @@ object Auth {
         }
       } yield jwt
       case req @ POST -> Root / "auth" / "register" => {
-        import scala.repositories.interpreters.postgres.PostgresUsersRepositoryInterpreter._
-        val userService: UserService[F] = UserService(PostgresUsersRepositoryInterpreter.userRepository)
+
+        val xa = Transactor.fromDriverManager[IO](
+          "org.postgresql.Driver", // driver classname
+          "jdbc:postgresql:world", // connect URL (driver-specific)
+          "postgres", // user
+          "postgres" // password
+        )
+        val postgresUserRepository: UserRepository[F] = postgresUserRepoInterpreter[F](xa)
+
+        val userService: UserService[F] = UserService(postgresUserRepository)
 
         for {
           user <- req.as[User]
-          result <- userService.create(user.username, user.password) match {
+          result <- userService.create(user.username, user.password)
+          mm <- result match {
             case Right(x) => Ok(x.asJson)
             case Left(x) => BadRequest(x.asJson)
           }
-        } yield ()
-
+        }
+         yield mm
       }
     }
   }

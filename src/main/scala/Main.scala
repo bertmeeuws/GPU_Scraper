@@ -47,13 +47,6 @@ object Init extends IOApp {
 
 
   override def run(args: List[String]): IO[ExitCode] = {
-    /*
-        val apis = Router(
-          "/api" -> storesRoutes[IO],
-          "/api" -> directorRoutes[IO]
-        ).orNotFound
-    */
-
     EmberServerBuilder.default[IO]
       .withHost(host"0.0.0.0")
       .withPort(port"8080")

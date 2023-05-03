@@ -15,6 +15,7 @@ import org.http4s.implicits._
 import org.http4s.server._
 import com.services.{Alternate, Amazon, Megekko, Stores}
 import scala.auth.Auth.authRoutes
+import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters._
 
 object Server {
   implicit val storesQueryParamDecoder: QueryParamDecoder[Stores] = (value: QueryParameterValue) => {

@@ -1,4 +1,4 @@
-package scala.repositories.interpreters.postgres
+package com.scala.repositories.interpreters.postgres
 
 import cats.Id
 import com.scala.repositories.algebras.UserRepository
@@ -11,45 +11,44 @@ import cats._
 import cats.data._
 import cats.effect._
 import cats.implicits._
+import doobie.postgres._
+import doobie.postgres.implicits._
 
 import java.util.UUID
 
 
-object PostgresUsersRepositoryInterpreter {
-  val xa = Transactor.fromDriverManager[IO](
-    "org.postgresql.Driver", // driver classname
-    "jdbc:postgresql:world", // connect URL (driver-specific)
-    "postgres", // user
-    "postgres" // password
-  )
+object UserRepositoryInterpreters {
+  def apply[F[_]: UserRepository]: UserRepository[F] = implicitly
 
-  val y = xa.yolo
 
-  import y._
+  def postgresUserRepoInterpreter[F[_]: Monad: Async](xa: Transactor[F]): UserRepository[F] = new UserRepository[F] {
+    val y = xa.yolo
 
-  val create =
-    sql"""
-      CREATE TABLE person (
-        id   UUID NOT NULL PRIMARY KEY,
-        name VARCHAR NOT NULL UNIQUE,
-        password  VARCHAR NOT NULL
-      )
-    """.update.run
+    import y._
 
-  implicit val userRepository: UserRepository[IO] = new UserRepository[IO] {
-    override def find(userId: UUID): IO[Option[User]] = {
+    val create =
+      sql"""
+        CREATE TABLE person (
+          id   UUID NOT NULL PRIMARY KEY,
+          name VARCHAR NOT NULL UNIQUE,
+          password  VARCHAR NOT NULL
+        )
+      """.update.run
+
+    override def find(userId: UUID): F[Option[User]] = {
       sql"select id, name, password from person where id = $userId".query[User].option.transact(xa)
     }
-    override def create(user: User): IO[Option[UUID]] = {
-      sql"insert into person (name, age) values ($user.username, $user.password)".update.withUniqueGeneratedKeys[UUID]("id").transact(xa).option
+
+    override def create(user: User): F[Option[UUID]] = {
+      sql"insert into person (name, age) values ($user.username, $user.password)".update.withUniqueGeneratedKeys[UUID]("id").transact(xa)
     }
-    override def delete(userId: UUID): IO[Option[UUID]] = {
+
+    override def delete(userId: UUID): F[Option[UUID]] = {
       sql"delete from person where id = $userId".update.run.transact(xa).flatMap(_ => IO.pure(Some(userId)))
     }
 
-    override def findByUsername(username: String): IO[Option[User]] = {
+    override def findByUsername(username: String): F[Option[User]] = {
       sql"select id, name, password from person where name = $username".query[User].option.transact(xa)
     }
   }
 }
-
