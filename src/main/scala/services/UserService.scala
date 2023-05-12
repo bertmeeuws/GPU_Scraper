@@ -22,7 +22,11 @@ class UserService[F[_]: Monad](usersRepository: UserRepository[F]) {
   def create(username: String, password: String): F[Either[UserError,UUID]] = {
     // Do all the validating here
     usersRepository.findByUsername(username).flatMap {
-      case None => usersRepository.create(User(UUID.randomUUID(), username, password)).map(_.asRight)
+      case None => usersRepository.create(User(UUID.randomUUID(), username, password)).flatMap { k => k match {
+        case Some(userId) => Monad[F].pure(userId.asRight)
+        case None => Monad[F].pure(UserAlreadyExists(username).asLeft)
+      }
+      }
       case Some(existingUser) => Monad[F].pure(UserAlreadyExists(existingUser.username).asLeft)
     }
   }

@@ -38,16 +38,10 @@ object Auth {
 
   import scala.auth.Service._
 
-  implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
 
 
-  def authRoutes[F[_]: Monad](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
-    val xa = Transactor.fromDriverManager[F](
-      "org.postgresql.Driver", // driver classname
-      "jdbc:postgresql:world", // connect URL (driver-specific)
-      "postgres", // user
-      "postgres" // password
-    )
+  def authRoutes[F[_]: Monad: MonadThrow](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
+    implicit val decoder: EntityDecoder[F, User] = jsonOf[F, User]
 
     val dsl = Http4sDsl[F]
     import dsl._

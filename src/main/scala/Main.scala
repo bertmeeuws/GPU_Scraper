@@ -45,7 +45,7 @@ object Init extends IOApp {
   val url = s"https://www.alternate.be/listing.xhtml?q=${URLEncoder.encode(query, "UTF-8")}"
 
 
-  val products = Semigroup[List[Product]].combine(Scraper[Alternate.type](gpuName, url), Scraper[Megekko.type ](gpuName, url))
+  //val products = Semigroup[List[Product]].combine(Scraper[Alternate.type](gpuName, url), Scraper[Megekko.type ](gpuName, url))
 
 
   override def run(args: List[String]): IO[ExitCode] = {
