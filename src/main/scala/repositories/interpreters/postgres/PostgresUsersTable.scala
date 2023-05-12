@@ -1,17 +1,10 @@
 package com.scala.repositories.interpreters.postgres
 
-import cats.Id
 import com.scala.repositories.algebras.UserRepository
 import com.scala.repositories._
-import doobie._
 import doobie.implicits._
-import doobie.util.ExecutionContexts
-import cats._
-import cats.data._
 import cats.effect._
-import cats.implicits._
 import doobie.hikari.HikariTransactor
-import doobie.postgres._
 import doobie.postgres.implicits._
 
 import java.util.UUID

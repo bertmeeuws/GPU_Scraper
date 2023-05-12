@@ -2,18 +2,12 @@ package com.services
 
 import org.jsoup._
 
-import scala.collection.convert.ImplicitConversions.{`collection AsScalaIterable`, `iterable AsScalaIterable`, `list asScalaBuffer`}
 import scala.domain.entities._
 import sttp.client3._
 import io.circe.generic.auto._
 import sttp.client3.circe._
-import cats._
-import cats.effect.IO
-import cats.effect.unsafe.implicits.global
 
 import scala.annotation.tailrec
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.services.parser.Parser
 
 trait Scraper[T] {
