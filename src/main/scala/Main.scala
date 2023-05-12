@@ -12,13 +12,14 @@ import sttp.client3._
 import io.circe.generic.auto._
 import org.http4s.server.Router
 
-import scala.api.http.Server.{allRoutesComplete, directorRoutes, storesRoutes}
+import scala.api.http.Server.{allRoutesComplete, storesRoutes}
 import scala.concurrent.ExecutionContext
 import cats._
 import cats.data._
 import cats.effect._
 import cats.implicits._
 import com.comcast.ip4s.IpLiteralSyntax
+import com.sun.net.httpserver.HttpServer
 import org.http4s.circe._
 import org.http4s._
 import io.circe.generic.auto._
@@ -29,6 +30,7 @@ import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.headers._
 import org.http4s.implicits._
 import org.http4s.server._
+import scala.api.http.Server
 
 
 
@@ -47,14 +49,6 @@ object Init extends IOApp {
 
 
   override def run(args: List[String]): IO[ExitCode] = {
-    EmberServerBuilder.default[IO]
-      .withHost(host"0.0.0.0")
-      .withPort(port"8080")
-      .withHttpApp(allRoutesComplete[IO])
-      .build
-      .use(_ => IO.never)
-      .as(ExitCode.Success)
-
-
+    Server.create()
   }
 }

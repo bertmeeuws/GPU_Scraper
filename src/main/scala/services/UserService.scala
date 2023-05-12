@@ -27,12 +27,7 @@ class UserService[F[_]: Monad](usersRepository: UserRepository[F]) {
     }
   }
 
-  def delete(userId: UUID): F[Either[String ,UUID]] = {
-    usersRepository.delete(userId).flatMap {
-      case Some(userId) => Monad[F].pure(Some(userId).asRight)
-      case None => Monad[F].pure(UserNotFound(userId).asLeft)
-    }
-  }
+  def delete(userId: UUID): F[Either[String ,UUID]] = ???
 }
 
 object UserService {

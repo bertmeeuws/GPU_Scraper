@@ -41,6 +41,8 @@ libraryDependencies += "dev.profunktor" %% "http4s-jwt-auth" % JwtVersion
 
 libraryDependencies += "org.tpolecat" %% "doobie-core"      % "1.0.0-RC1"
 libraryDependencies += "org.tpolecat" %% "doobie-postgres"  % "1.0.0-RC1"
+libraryDependencies += "org.tpolecat"          %% "doobie-h2"            % "1.0.0-RC1"
+libraryDependencies += "org.tpolecat"          %% "doobie-hikari"        % "1.0.0-RC1"
 
 libraryDependencies += "com.github.pureconfig" %% "pureconfig" % "0.17.3"
 libraryDependencies += "com.github.pureconfig" %% "pureconfig-cats-effect" % "0.17.3"

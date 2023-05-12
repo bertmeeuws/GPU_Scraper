@@ -27,6 +27,8 @@ import scala.util.Try
 import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters._
 import doobie.Transactor
 
+import scala.api.http.Server.Resources
+
 
 
 object Auth {
@@ -39,9 +41,7 @@ object Auth {
   implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
 
 
-
-
-  def authRoutes[F[_]: Concurrent: Monad: Async]: HttpRoutes[F] = {
+  def authRoutes[F[_]: Monad](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
     val xa = Transactor.fromDriverManager[F](
       "org.postgresql.Driver", // driver classname
       "jdbc:postgresql:world", // connect URL (driver-specific)
@@ -66,28 +66,21 @@ object Auth {
           case None => InternalServerError()
         }
       } yield jwt
-      case req @ POST -> Root / "auth" / "register" => {
 
-        val xa = Transactor.fromDriverManager[IO](
-          "org.postgresql.Driver", // driver classname
-          "jdbc:postgresql:world", // connect URL (driver-specific)
-          "postgres", // user
-          "postgres" // password
-        )
-        val postgresUserRepository: UserRepository[F] = postgresUserRepoInterpreter[F](xa)
+    case req @ POST -> Root / "auth" / "register" => {
 
-        val userService: UserService[F] = UserService(postgresUserRepository)
+      val userService: UserService[F] = UserService(userRepository)
 
-        for {
-          user <- req.as[User]
-          result <- userService.create(user.username, user.password)
-          mm <- result match {
-            case Right(x) => Ok(x.asJson)
-            case Left(x) => BadRequest(x.asJson)
-          }
+      for {
+        user <- req.as[User]
+        result <- userService.create(user.username, user.password)
+        mm <- result match {
+          case Right(x) => Ok(x.asJson)
+          case Left(x) => BadRequest(x.asJson)
         }
-         yield mm
       }
+       yield mm
+    }
     }
   }
 }
