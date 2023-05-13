@@ -25,6 +25,7 @@ import com.scala.repositories.algebras.UserRepository
 
 import scala.util.Try
 import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters._
+import com.utils.Logger
 import doobie.Transactor
 
 import scala.api.http.Server.Resources
@@ -39,8 +40,7 @@ object Auth {
   import scala.auth.Service._
 
 
-
-  def authRoutes[F[_]: Monad: MonadThrow](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
+  def authRoutes[F[_]: Monad: MonadThrow: Sync](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
     implicit val decoder: EntityDecoder[F, User] = jsonOf[F, User]
 
     val dsl = Http4sDsl[F]
@@ -63,11 +63,17 @@ object Auth {
 
     case req @ POST -> Root / "auth" / "register" => {
 
+
+
       val userService: UserService[F] = UserService(userRepository)
 
+
       for {
+        _ <- Logger.log[F](s"""Starting to create user""")
         user <- req.as[User]
+        _ <- Logger.log[F](s"""User: ${user.username}""")
         result <- userService.create(user.username, user.password)
+        _ <- Logger.log[F](s"""User was created""")
         mm <- result match {
           case Right(x) => Ok(x.asJson)
           case Left(x) => BadRequest(x.asJson)

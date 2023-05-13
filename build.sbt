@@ -44,9 +44,16 @@ libraryDependencies += "org.tpolecat" %% "doobie-postgres"  % "1.0.0-RC1"
 libraryDependencies += "org.tpolecat"          %% "doobie-h2"            % "1.0.0-RC1"
 libraryDependencies += "org.tpolecat"          %% "doobie-hikari"        % "1.0.0-RC1"
 
+//dependencyOverrides += "org.tpolecat" % "doobie-h2" % "1.0.0-RC1"
+
+
 libraryDependencies += "com.github.pureconfig" %% "pureconfig" % "0.17.3"
 libraryDependencies += "com.github.pureconfig" %% "pureconfig-cats-effect" % "0.17.3"
-libraryDependencies += "com.github.geirolz" %% "fly4s-core" % "0.0.17"
+libraryDependencies += "org.flywaydb" % "flyway-core" % "5.2.4"
+
+libraryDependencies += "ch.qos.logback"        %  "logback-classic"      % "1.4.6"
+
+
 
 
 

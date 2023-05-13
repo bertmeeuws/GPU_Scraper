@@ -4,6 +4,7 @@ import com.scala.repositories.algebras.UserRepository
 import com.scala.repositories._
 import doobie.implicits._
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import doobie.hikari.HikariTransactor
 import doobie.postgres.implicits._
 

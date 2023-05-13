@@ -29,6 +29,7 @@ import doobie._
 import doobie.implicits._
 import doobie.hikari._
 import org.http4s.server.Server
+import com.utils.Logger
 
 import scala.database.Database
 
@@ -69,7 +70,7 @@ object Server {
   }
 
   def create(configFile: String = "application.conf"): IO[ExitCode] = {
-    resources(configFile).use(create)
+    resources(configFile).use(createe)
   }
 
   private def resources(configFile: String): Resource[IO, Resources] = {
@@ -91,10 +92,13 @@ object Server {
     }
   }
 
-  def create(resources: Resources): IO[ExitCode] = {
+  def createe(resources: Resources): IO[ExitCode] = {
     (for {
+      _ <- IO.println("Starting server").toResource
       _ <- Database.initialize[IO](resources.transactor).toResource
+      _ <- IO.println("Database initialized").toResource
       userRepository = new UserRepositoryInterpreters(resources.transactor)
+      _ <- IO.println("User repository initialized").toResource
       server <- HTTPServer.createEmberServer[IO]("application.conf", resources, userRepository)
     } yield {
       server
