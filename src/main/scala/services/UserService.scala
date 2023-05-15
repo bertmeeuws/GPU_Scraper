@@ -20,12 +20,6 @@ class UserService[F[_]: Monad](usersRepository: UserRepository[F]) {
   }
 
   def create(username: String, password: String): F[Either[UserError,Long]] = {
-    for {
-      user <- usersRepository.findByUsername(username)
-
-    } yield ()
-
-
     usersRepository.findByUsername(username).flatMap {
       case None => usersRepository.create(User(2, username, password)).flatMap { k =>
         {
