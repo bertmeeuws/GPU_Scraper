@@ -6,30 +6,57 @@ import doobie.implicits._
 import cats.effect._
 import cats.effect.unsafe.implicits.global
 import doobie.hikari.HikariTransactor
-import doobie.postgres.implicits._
+import doobie.util.transactor.Transactor
 
 import java.util.UUID
 
 
-class UserRepositoryInterpreters(xa: HikariTransactor[IO]) extends UserRepository[IO] {
+class UserRepositoryInterpreters(xa: Transactor[IO]) extends UserRepository[IO] {
 
 
-    override def find(userId: UUID): IO[Option[User]] = {
-      sql"select id, name, password from person where id = $userId".query[User].option.transact(xa)
+    override def find(userId: Long): IO[Option[User]] = {
+      sql"SELECT id, name, password FROM user WHERE id = $userId".query[User].option.transact(xa)
     }
 
-    override def create(user: User): IO[Option[UUID]] = {
-      sql"insert into person (name, age) values ($user.username, $user.password)".update.withUniqueGeneratedKeys[UUID]("id").transact(xa).option
+    override def create(user: User): IO[Option[Long]] = {
+      println(user)
+      println("creating user")
+      sql"INSERT INTO user (username, password) VALUES ($user.username, $user.password)".update.withUniqueGeneratedKeys[Long]("id").transact(xa).map(k => {
+        println(k)
+        println("created user")
+        Some(k)
+      }).unsafeRunSync()
+
+      sql"INSERT INTO user (username, password) VALUES ($user.username, $user.password)".update.withUniqueGeneratedKeys[Long]("id").transact(xa).map(k => {
+        println(k)
+        println("created user")
+        Some(k)
+      })
     }
 
-    override def delete(userId: UUID): IO[Unit] = {
-      sql"delete from person where id = $userId".update.run.transact(xa).void
+    override def delete(userId: Long): IO[Unit] = {
+      sql"delete from user where id = $userId".update.run.transact(xa).void
     }
 
     override def findByUsername(username: String): IO[Option[User]] = {
-      sql"select id, name, password from person where name = $username".query[User].option.transact(xa)
-    }
+      println("Find by username")
 
+      sql"SELECT table_name FROM "
+
+      sql"SELECT id, username, password FROM user WHERE username = $username".query[User].option.transact(xa).map {
+        case Some(user) => {
+          println("Some")
+          println(user)
+          Some(user)
+        }
+        case None => {
+          println("None")
+          None
+        }
+      }.unsafeRunSync()
+
+      IO(Some(User(133L, "sqdsu","dsqs")))
+    }
 }
 
 object UserRepositoryInterpreters {

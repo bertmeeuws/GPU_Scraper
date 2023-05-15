@@ -36,6 +36,7 @@ libraryDependencies ++= Seq(
 libraryDependencies += "com.auth0" % "java-jwt" % "4.2.1"
 
 val JwtVersion = "1.2.0"
+val H2Version = "2.1.214"
 
 libraryDependencies += "dev.profunktor" %% "http4s-jwt-auth" % JwtVersion
 
@@ -44,12 +45,14 @@ libraryDependencies += "org.tpolecat" %% "doobie-postgres"  % "1.0.0-RC1"
 libraryDependencies += "org.tpolecat"          %% "doobie-h2"            % "1.0.0-RC1"
 libraryDependencies += "org.tpolecat"          %% "doobie-hikari"        % "1.0.0-RC1"
 
+
+libraryDependencies += "com.h2database"        %  "h2"                   % H2Version
 //dependencyOverrides += "org.tpolecat" % "doobie-h2" % "1.0.0-RC1"
 
 
 libraryDependencies += "com.github.pureconfig" %% "pureconfig" % "0.17.3"
 libraryDependencies += "com.github.pureconfig" %% "pureconfig-cats-effect" % "0.17.3"
-libraryDependencies += "org.flywaydb" % "flyway-core" % "5.2.4"
+libraryDependencies += "org.flywaydb" % "flyway-core" % "9.2.0"
 
 libraryDependencies += "ch.qos.logback"        %  "logback-classic"      % "1.4.6"
 

@@ -27,6 +27,10 @@ object Database {
   def initialize[F[_]](transactor: HikariTransactor[F])(implicit as: Async[F]): F[Unit] = {
     transactor.configure { dataSource =>
       Async[F].pure {
+        dataSource.setConnectionTimeout(3000)
+        dataSource.setLoginTimeout(5)
+        dataSource.isRunning()
+        dataSource.getConnectionTestQuery()
         val flyWay = Flyway.configure().dataSource(dataSource).load()
         flyWay.migrate()
         ()

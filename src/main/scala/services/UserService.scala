@@ -10,23 +10,33 @@ import com.scala.repositories.algebras.UserRepository
 import java.util.UUID
 
 sealed trait UserError
-case class UserNotFound(userId: UUID) extends UserError
+case class UserNotFound(userId: Long) extends UserError
 case class UserAlreadyExists(username: String) extends UserError
 
 
 class UserService[F[_]: Monad](usersRepository: UserRepository[F]) {
-  def get(userId: UUID): F[Option[User]] = {
+  def get(userId: Long): F[Option[User]] = {
     usersRepository.find(userId)
   }
 
-  def create(username: String, password: String): F[Either[UserError,UUID]] = {
-    // Do all the validating here
+  def create(username: String, password: String): F[Either[UserError,Long]] = {
+    for {
+      user <- usersRepository.findByUsername(username)
+
+    } yield ()
+
+
     usersRepository.findByUsername(username).flatMap {
-      case None => usersRepository.create(User(UUID.randomUUID(), username, password)).flatMap { k => k match {
-        case Some(userId) => Monad[F].pure(userId.asRight)
+      case None => usersRepository.create(User(2, username, password)).flatMap { k =>
+        {
+        k match {
+        case Some(userId) => {
+          println(userId)
+          Monad[F].pure(userId.asRight)
+        }
         case None => Monad[F].pure(UserAlreadyExists(username).asLeft)
       }
-      }
+      }}
       case Some(existingUser) => Monad[F].pure(UserAlreadyExists(existingUser.username).asLeft)
     }
   }

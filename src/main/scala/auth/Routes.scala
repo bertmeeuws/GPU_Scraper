@@ -64,7 +64,7 @@ object Auth {
     case req @ POST -> Root / "auth" / "register" => {
 
 
-
+      println(userRepository)
       val userService: UserService[F] = UserService(userRepository)
 
 
