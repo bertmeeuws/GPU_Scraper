@@ -41,7 +41,6 @@ class UserRepositoryInterpreters(xa: Transactor[IO]) extends UserRepository[IO] 
     override def findByUsername(username: String): IO[Option[User]] = {
       println("Find by username")
 
-      sql"SELECT table_name FROM "
 
       sql"SELECT id, username, password FROM user WHERE username = $username".query[User].option.transact(xa).map {
         case Some(user) => {
