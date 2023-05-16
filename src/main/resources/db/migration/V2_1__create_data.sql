@@ -1,1 +1,1 @@
-INSERT INTO `user` (username, password) VALUES ('admin', 'admin');
+INSERT INTO public.user (username, password) VALUES ('admin', 'admin');

@@ -24,14 +24,9 @@ class UserService(usersRepository: UserRepository[IO]) {
     usersRepository.findByUsername(username).flatMap {
       case None => usersRepository.create(User(2, username, password)).flatMap { k =>
         {
-        k match {
-        case Some(userId) => {
-          println(userId)
-          IO { userId.asRight }
-        }
-        case None => IO(UserAlreadyExists(username).asLeft)
+          IO { k.asRight }
       }
-      }}
+      }
       case Some(existingUser) => IO(UserAlreadyExists(existingUser.username).asLeft)
     }
   }
