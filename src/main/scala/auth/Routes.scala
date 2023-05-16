@@ -40,12 +40,12 @@ object Auth {
   import scala.auth.Service._
 
 
-  def authRoutes[F[_]: Monad: MonadThrow: Sync](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
-    implicit val decoder: EntityDecoder[F, User] = jsonOf[F, User]
+  def authRoutes(resources: Resources, userRepository: UserRepository[IO]): HttpRoutes[IO] = {
+    implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
 
-    val dsl = Http4sDsl[F]
+    val dsl = Http4sDsl[IO]
     import dsl._
-    HttpRoutes.of[F] {
+    HttpRoutes.of[IO] {
       case req @ POST -> Root / "auth" / "login" => for {
         user <- req.as[User]
         _ <- login(user.username, user.password) match {
@@ -55,25 +55,21 @@ object Auth {
             NotFound()
           }
         }
-        jwt <- Jwt.createToken[F](user.username) flatMap {
+        jwt <- Jwt.createToken(user.username) flatMap {
           case Some(x) => Ok(s"""{"jwt": "${x}"}""").map(_.putHeaders(`Content-Type`(MediaType.application.json)))
           case None => InternalServerError()
         }
       } yield jwt
 
     case req @ POST -> Root / "auth" / "register" => {
-
-
-      println(userRepository)
-      val userService: UserService[F] = UserService(userRepository)
-
+      val userService = UserService(userRepository)
 
       for {
-        _ <- Logger.log[F](s"""Starting to create user""")
+        _ <- Logger.log(s"""Starting to create user""")
         user <- req.as[User]
-        _ <- Logger.log[F](s"""User: ${user.username}""")
+        _ <- Logger.log(s"""User: ${user.username}""")
         result <- userService.create(user.username, user.password)
-        _ <- Logger.log[F](s"""User was created""")
+        _ <- Logger.log(s"""User was created""")
         mm <- result match {
           case Right(x) => Ok(x.asJson)
           case Left(x) => BadRequest(x.asJson)

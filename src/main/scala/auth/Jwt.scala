@@ -23,7 +23,7 @@ case object User extends Role
 
 
 object Jwt {
-  def createToken[F[_]:  Monad](username: String): F[Option[String]] = {
+  def createToken(username: String): IO[Option[String]] = {
     val claim = JwtClaim(content =
       s"""{
          "username": "$username",
@@ -33,7 +33,7 @@ object Jwt {
     val secret = JwtSecretKey("dzauhduhduhduhduauhdua")
     val algorithm = JwtAlgorithm.HS256
 
-    val jwt: F[JwtToken] = jwtEncode(claim, secret, algorithm)
+    val jwt = jwtEncode[IO](claim, secret, algorithm)
 
     import cats.implicits._
 

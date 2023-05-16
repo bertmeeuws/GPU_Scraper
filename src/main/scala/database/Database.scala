@@ -1,10 +1,9 @@
 package scala.database
 
 import cats.effect._
-import com.config.Config._
-import doobie.util.transactor.Transactor
 
-import doobie.implicits._
+import com.config.Config._
+
 import org.flywaydb.core.Flyway
 import doobie.hikari.HikariTransactor
 
@@ -12,9 +11,9 @@ import scala.concurrent.ExecutionContext
 
 
 object Database {
-  def transactor[F[_]](config: DatabaseConfig, executionContext: ExecutionContext)(implicit as: Async[F]): Resource[F, HikariTransactor[F]] = {
+  def transactor(config: DatabaseConfig, executionContext: ExecutionContext): Resource[IO, HikariTransactor[IO]] = {
     for {
-      xa <- HikariTransactor.newHikariTransactor[F](
+      xa <- HikariTransactor.newHikariTransactor[IO](
         config.driver,
         config.url,
         config.user,
@@ -24,13 +23,9 @@ object Database {
     } yield xa
   }
 
-  def initialize[F[_]](transactor: HikariTransactor[F])(implicit as: Async[F]): F[Unit] = {
+  def initialize(transactor: HikariTransactor[IO]): IO[Unit] = {
     transactor.configure { dataSource =>
-      Async[F].pure {
-        dataSource.setConnectionTimeout(3000)
-        dataSource.setLoginTimeout(5)
-        dataSource.isRunning()
-        dataSource.getConnectionTestQuery()
+      IO {
         val flyWay = Flyway.configure().dataSource(dataSource).load()
         flyWay.migrate()
         ()

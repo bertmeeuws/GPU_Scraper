@@ -1,15 +1,13 @@
 package com.utils
 
 import cats.effect.IO._
-import cats.effect.{IO, Sync}
-import cats._
+import cats.effect.{IO}
 import cats.implicits._
-import cats.syntax.all._
 
 
 object Logger {
-  def log[F[_]](msg: String)(implicit S: Sync[F]): F[Unit] = {
+  def log(msg: String): IO[Unit] = {
     println(msg)
-    S.delay(println(msg))
+    IO.delay(println(msg))
   }
 }

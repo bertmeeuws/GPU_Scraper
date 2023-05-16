@@ -27,7 +27,7 @@ class UserRepositoryInterpreters(xa: Transactor[IO]) extends UserRepository[IO] 
         Some(k)
       }).unsafeRunSync()
 
-      sql"INSERT INTO user (username, password) VALUES ($user.username, $user.password)".update.withUniqueGeneratedKeys[Long]("id").transact(xa).map(k => {
+      sql"INSERT INTO user (username, password) VALUES (${user.username}, ${user.password})".update.withUniqueGeneratedKeys[Long]("id").transact(xa).map(k => {
         println(k)
         println("created user")
         Some(k)
@@ -38,24 +38,12 @@ class UserRepositoryInterpreters(xa: Transactor[IO]) extends UserRepository[IO] 
       sql"delete from user where id = $userId".update.run.transact(xa).void
     }
 
-    override def findByUsername(username: String): IO[Option[User]] = {
-      println("Find by username")
-
-
-      sql"SELECT id, username, password FROM user WHERE username = $username".query[User].option.transact(xa).map {
-        case Some(user) => {
-          println("Some")
-          println(user)
-          Some(user)
-        }
-        case None => {
-          println("None")
-          None
-        }
-      }.unsafeRunSync()
-
-      IO(Some(User(133L, "sqdsu","dsqs")))
-    }
+  override def findByUsername(username: String): IO[Option[User]] =
+    IO.println("Find by username") >>
+      sql"SELECT id, username, password FROM user WHERE username = $username".query[User].option.transact(xa).flatTap {
+        case Some(user) => IO.println(s"[findByUsername] Some($user)")
+        case None => IO.println("[findByUsername] None")
+      }
 }
 
 object UserRepositoryInterpreters {

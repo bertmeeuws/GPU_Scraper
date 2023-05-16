@@ -47,10 +47,10 @@ object Server {
 
   object GPUNameParamMatcher extends QueryParamDecoderMatcher[String]("gpuName")
 
-  def storesRoutes[F[_] : Monad]: HttpRoutes[F] = {
-    val dsl = Http4sDsl[F]
+  def storesRoutes: HttpRoutes[IO] = {
+    val dsl = Http4sDsl[IO]
     import dsl._
-    HttpRoutes.of[F] {
+    HttpRoutes.of[IO] {
       case GET -> Root / "stores" :? StoreQueryParamMatcher(store) +& GPUNameParamMatcher(gpuName) =>
         store match {
           case Some(x) => Ok(x.toString)
@@ -61,12 +61,12 @@ object Server {
     }
   }
 
-  def allRoutes[F[_] : Monad](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpRoutes[F] = {
-    storesRoutes[F] <+> authRoutes[F](resources, userRepository)
+  def allRoutes(resources: Resources, userRepository: UserRepository[IO]): HttpRoutes[IO] = {
+    storesRoutes <+> authRoutes(resources, userRepository)
   }
 
-  def allRoutesComplete[F[_] : Monad ](resources: Resources, userRepository: UserRepository[F])(implicit as: Async[F]): HttpApp[F] = {
-    allRoutes[F](resources, userRepository).orNotFound
+  def allRoutesComplete(resources: Resources, userRepository: UserRepository[IO]): HttpApp[IO] = {
+    allRoutes(resources, userRepository).orNotFound
   }
 
   def create(configFile: String = "application.conf"): IO[ExitCode] = {
@@ -77,17 +77,17 @@ object Server {
     for {
       config <- load(configFile)
       ec <- ExecutionContexts.fixedThreadPool[IO](config.database.threadPoolSize)
-      transactor <- Database.transactor[IO](config.database, ec)
+      transactor <- Database.transactor(config.database, ec)
     } yield Resources(transactor, config)
   }
 
   object HTTPServer {
-    def createEmberServer[F[_]: Monad: Async](configFile: String = "application.conf", resources: Resources, userRepository: UserRepository[F]): Resource[F, Server] = {
-      EmberServerBuilder.default[F]
+    def createEmberServer(configFile: String = "application.conf", resources: Resources, userRepository: UserRepository[IO]): Resource[IO, Server] = {
+      EmberServerBuilder.default[IO]
         .withHost(host"0.0.0.0")
         .withPort(port"8080")
         .withHttpApp(
-          allRoutesComplete[F](resources, userRepository))
+          allRoutesComplete(resources, userRepository))
         .build
     }
   }
@@ -95,11 +95,11 @@ object Server {
   def createe(resources: Resources): IO[ExitCode] = {
     (for {
       _ <- IO.println("Starting server").toResource
-      _ <- Database.initialize[IO](resources.transactor).toResource
+      _ <- Database.initialize(resources.transactor).toResource
       _ <- IO.println("Database initialized").toResource
       userRepository = new UserRepositoryInterpreters(resources.transactor)
       _ <- IO.println("User repository initialized").toResource
-      server <- HTTPServer.createEmberServer[IO]("application.conf", resources, userRepository)
+      server <- HTTPServer.createEmberServer("application.conf", resources, userRepository)
     } yield {
       server
     }).use(_ => IO.never).as(ExitCode.Success)
