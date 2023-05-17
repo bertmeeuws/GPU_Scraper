@@ -39,9 +39,12 @@ object Auth {
 
   import scala.auth.Service._
 
+  case class JWT(jwt: String)
 
   def authRoutes(resources: Resources, userRepository: UserRepository[IO]): HttpRoutes[IO] = {
     implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
+
+    implicit val jwtEncoder: EntityDecoder[IO, JWT] = jsonOf[IO, JWT]
 
     val dsl = Http4sDsl[IO]
     import dsl._
@@ -55,11 +58,9 @@ object Auth {
             NotFound()
           }
         }
-        jwt <- Jwt.createToken(user.username) flatMap {
-          case Some(x) => Ok(s"""{"jwt": "${x}"}""").map(_.putHeaders(`Content-Type`(MediaType.application.json)))
-          case None => InternalServerError()
-        }
-      } yield jwt
+        jwt <- Jwt.createToken(user.username)
+        response <- Ok(jwt.asJson)
+      } yield response
 
     case req @ POST -> Root / "auth" / "register" => {
       val userService = UserService(userRepository)
@@ -69,14 +70,15 @@ object Auth {
         user <- req.as[User]
         _ <- Logger.log(s"""User: ${user.username}""")
         result <- userService.create(user.username, user.password)
-        _ <- Logger.log(s"""User was created""")
-        mm <- result match {
-          case Right(x) => Ok(x.asJson)
+        response <- result match {
+          case Right(x) => Ok(JWT(x).asJson)
           case Left(x) => BadRequest(x.asJson)
         }
-      }
-       yield mm
+      } yield response
+
+
     }
+
     }
   }
 }

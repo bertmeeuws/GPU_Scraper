@@ -9,6 +9,7 @@ import implicits._
 import com.scala.repositories.algebras.UserRepository
 
 import java.util.UUID
+import scala.auth.Jwt
 
 sealed trait UserError
 case class UserNotFound(userId: Long) extends UserError
@@ -17,18 +18,32 @@ case class UserAlreadyExists(username: String) extends UserError
 
 class UserService(usersRepository: UserRepository[IO]) {
   def get(userId: Long): IO[Option[User]] = {
-    usersRepository.find(userId)
+    for {
+      user <- usersRepository.find(userId)
+      result <- user match {
+        case Some(user) => IO { Some(user) }
+        case None => IO { None }
+      }
+    } yield result
+
   }
 
-  def create(username: String, password: String): IO[Either[UserError,Long]] = {
-    usersRepository.findByUsername(username).flatMap {
-      case None => usersRepository.create(User(2, username, password)).flatMap { k =>
-        {
-          IO { k.asRight }
+  def create(username: String, password: String): IO[Either[UserError,String]] = {
+    for {
+      user <- usersRepository.findByUsername(username)
+      result <- user match {
+        case Some(user) => IO { Left(UserAlreadyExists(user.username)) }
+        case None => {
+          val user = UserWithOutId(username, password)
+
+          for {
+            userId <- usersRepository.create(user)
+            createdUser <- usersRepository.find(userId)
+            token <- Jwt.createToken(createdUser.get.username)
+          } yield Right(token)
+        }
       }
-      }
-      case Some(existingUser) => IO(UserAlreadyExists(existingUser.username).asLeft)
-    }
+    } yield result
   }
 
   def delete(userId: UUID): IO[Either[String ,UUID]] = ???
