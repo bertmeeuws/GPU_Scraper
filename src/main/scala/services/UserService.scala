@@ -46,7 +46,20 @@ class UserService(usersRepository: UserRepository[IO]) {
     } yield result
   }
 
-  def delete(userId: UUID): IO[Either[String ,UUID]] = ???
+
+  def delete(userId: Long): IO[Either[UserError, Unit]] = {
+    for {
+      user <- usersRepository.find(userId)
+      result <- user match {
+        case Some(foundUser) => {
+          for {
+            _ <- usersRepository.delete(foundUser.id)
+          } yield Right(())
+        }
+        case None => IO { Left(UserNotFound(userId)) }
+      }
+    } yield result
+  }
 }
 
 object UserService {

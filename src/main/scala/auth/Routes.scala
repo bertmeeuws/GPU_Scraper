@@ -49,18 +49,18 @@ object Auth {
     val dsl = Http4sDsl[IO]
     import dsl._
     HttpRoutes.of[IO] {
-      case req @ POST -> Root / "auth" / "login" => for {
+      case req @ POST -> Root / "auth" / "login" => {
+        val authService = new AuthService(userRepository)
+
+        for {
         user <- req.as[User]
-        _ <- login(user.username, user.password) match {
-          case Some(x) => Ok(x.asJson)
-          case None => {
-            println("testing")
-            NotFound()
-          }
+        userId <- authService.login(user.username, user.password)
+        response <- userId match {
+          case Some(x) => Jwt.createToken(x).flatMap(token => Ok(JWT(token).asJson))
+          case None => Unauthorized()
         }
-        jwt <- Jwt.createToken(user.username)
-        response <- Ok(jwt.asJson)
       } yield response
+      }
 
     case req @ POST -> Root / "auth" / "register" => {
       val userService = UserService(userRepository)
