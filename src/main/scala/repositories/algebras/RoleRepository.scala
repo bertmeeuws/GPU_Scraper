@@ -4,7 +4,9 @@ import com.scala.repositories._
 
 trait RoleRepository[F[_]] {
   def create(userId: Long, roleId: Long): F[Long]
-  def getRoleId(role: Role): F[Long]
+  def findRoleId(role: Role): F[Long]
+
+  def findRoleById(roleId: Long): F[Role]
 }
 
 case class RoleAssignment(userId: Long, roleId: Long)

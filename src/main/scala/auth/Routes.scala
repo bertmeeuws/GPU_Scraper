@@ -30,13 +30,16 @@ object Auth {
     HttpRoutes.of[IO] {
       case req @ POST -> Root / "auth" / "login" => {
         val authService = new AuthService(repositories.userRepository)
+        val roleService = new RoleService(repositories.roleRepository, repositories.roleAssignmentRepository)
 
         for {
           user   <- req.as[User]
           userId <- authService.login(user.username, user.password)
-          response <- userId match {
-            case Some(x) => Jwt.createToken(x).flatMap(token => Ok(JWT(token).asJson))
-            case None    => BadRequest("Invalid username or password".asJson)
+          roles  <- roleService.getRolesForUser(userId.get.toLong)
+          token  <- Jwt.createToken(user.username, roles)
+          response <- (userId, roles) match {
+            case (Some(x), r) => Ok(JWT(token).asJson)
+            case (_, _)       => BadRequest("Invalid username or password".asJson)
           }
         } yield response
       }
