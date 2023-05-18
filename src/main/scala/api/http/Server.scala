@@ -22,7 +22,7 @@ import doobie.hikari.HikariTransactor
 import org.http4s.ember.server.EmberServerBuilder
 import pureconfig.ConfigSource.resources
 import com.config.Config
-import com.scala.repositories.algebras.UserRepository
+import com.scala.repositories.algebras.{RoleAssignmentRepository, RoleRepository, UserRepository}
 import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters
 import doobie.util.ExecutionContexts
 import doobie._
@@ -105,5 +105,6 @@ object Server {
     }).use(_ => IO.never).as(ExitCode.Success)
   }
 
-  case class Resources(transactor: HikariTransactor[IO], config: Config)
+  case class Resources(transactor: HikariTransactor[IO], config: Config, userRepository: UserRepository[IO])
+  case class Repositories(userRepository: UserRepository[IO], roleRepository: RoleRepository[IO], roleAssignmentRepository: RoleAssignmentRepository[IO])
 }

@@ -21,7 +21,7 @@ import org.http4s.headers.`Content-Type`
 import org.http4s.MediaType
 import com.scala.services._
 import com.scala.repositories._
-import com.scala.repositories.algebras.UserRepository
+import com.scala.repositories.algebras.{RoleAssignmentRepository, RoleRepository, UserRepository}
 
 import scala.util.Try
 import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters._
@@ -41,7 +41,7 @@ object Auth {
 
   case class JWT(jwt: String)
 
-  def authRoutes(resources: Resources, userRepository: UserRepository[IO]): HttpRoutes[IO] = {
+  def authRoutes(resources: Resources, userRepository: UserRepository[IO], roleRepository: RoleRepository[IO], roleAssignmentRepository: RoleAssignmentRepository[IO]): HttpRoutes[IO] = {
     implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
 
     implicit val jwtEncoder: EntityDecoder[IO, JWT] = jsonOf[IO, JWT]
