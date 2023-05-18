@@ -57,7 +57,7 @@ object Auth {
         userId <- authService.login(user.username, user.password)
         response <- userId match {
           case Some(x) => Jwt.createToken(x).flatMap(token => Ok(JWT(token).asJson))
-          case None => Unauthorized()
+          case None => BadRequest("Invalid username or password".asJson)
         }
       } yield response
       }
