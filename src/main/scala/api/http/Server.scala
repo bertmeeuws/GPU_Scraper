@@ -22,8 +22,9 @@ import doobie.hikari.HikariTransactor
 import org.http4s.ember.server.EmberServerBuilder
 import pureconfig.ConfigSource.resources
 import com.config.Config
+import com.scala.directives.StoresDirective.storesRoutes
 import com.scala.repositories.algebras.{RoleAssignmentRepository, RoleRepository, UserRepository}
-import com.scala.repositories.interpreters.postgres.UserRepositoryInterpreters
+import com.scala.repositories.interpreters.postgres._
 import doobie.util.ExecutionContexts
 import doobie._
 import doobie.implicits._
@@ -34,43 +35,12 @@ import com.utils.Logger
 import scala.database.Database
 
 object Server {
-  implicit val storesQueryParamDecoder: QueryParamDecoder[Stores] = (value: QueryParameterValue) => {
-    value.value match {
-      case "alternate" => Validated.valid(Alternate)
-      case "megekko" => Validated.valid(Megekko)
-      case "amazon" => Validated.valid(Amazon)
-      case _ => Validated.invalidNel(ParseFailure("Invalid store", "Invalid store"))
-    }
-  }
-
-  object StoreQueryParamMatcher extends OptionalValidatingQueryParamDecoderMatcher[Stores]("store")
-
-  object GPUNameParamMatcher extends QueryParamDecoderMatcher[String]("gpuName")
-
-  def storesRoutes: HttpRoutes[IO] = {
-    val dsl = Http4sDsl[IO]
-    import dsl._
-    HttpRoutes.of[IO] {
-      case GET -> Root / "stores" :? StoreQueryParamMatcher(store) +& GPUNameParamMatcher(gpuName) =>
-        store match {
-          case Some(x) => Ok(x.toString)
-          case None => BadRequest()
-        }
-      case GET -> Root / "stores" / UUIDVar(storeId) / "information" => ???
-      case GET -> Root / "stores" / "testing" => Ok("Testing")
-    }
-  }
-
-  def allRoutes(resources: Resources, userRepository: UserRepository[IO]): HttpRoutes[IO] = {
-    storesRoutes <+> authRoutes(resources, userRepository)
-  }
-
-  def allRoutesComplete(resources: Resources, userRepository: UserRepository[IO]): HttpApp[IO] = {
-    allRoutes(resources, userRepository).orNotFound
+  def allRoutes(resources: Resources, repositories: Repositories): HttpApp[IO] = {
+    (storesRoutes <+> authRoutes(resources, repositories)).orNotFound
   }
 
   def create(configFile: String = "application.conf"): IO[ExitCode] = {
-    resources(configFile).use(createe)
+    resources(configFile).use(initializeResources)
   }
 
   private def resources(configFile: String): Resource[IO, Resources] = {
@@ -82,29 +52,32 @@ object Server {
   }
 
   object HTTPServer {
-    def createEmberServer(configFile: String = "application.conf", resources: Resources, userRepository: UserRepository[IO]): Resource[IO, Server] = {
+    def createEmberServer(configFile: String = "application.conf", resources: Resources, repositories: Repositories): Resource[IO, Server] = {
       EmberServerBuilder.default[IO]
         .withHost(host"0.0.0.0")
         .withPort(port"8080")
         .withHttpApp(
-          allRoutesComplete(resources, userRepository))
+          allRoutes(resources, repositories))
         .build
     }
   }
 
-  def createe(resources: Resources): IO[ExitCode] = {
+  def initializeResources(resources: Resources): IO[ExitCode] = {
     (for {
       _ <- IO.println("Starting server").toResource
       _ <- Database.initialize(resources.transactor).toResource
       _ <- IO.println("Database initialized").toResource
       userRepository = new UserRepositoryInterpreters(resources.transactor)
+      roleRepostiory = new RoleRepositoryInterpreter(resources.transactor)
+      roleAssignmentRepository = new RoleAssignmentsInterpreter(resources.transactor)
+      repositories = Repositories(userRepository, roleRepostiory, roleAssignmentRepository)
       _ <- IO.println("User repository initialized").toResource
-      server <- HTTPServer.createEmberServer("application.conf", resources, userRepository)
+      server <- HTTPServer.createEmberServer("application.conf", resources, repositories)
     } yield {
       server
     }).use(_ => IO.never).as(ExitCode.Success)
   }
 
-  case class Resources(transactor: HikariTransactor[IO], config: Config, userRepository: UserRepository[IO])
+  case class Resources(transactor: HikariTransactor[IO], config: Config)
   case class Repositories(userRepository: UserRepository[IO], roleRepository: RoleRepository[IO], roleAssignmentRepository: RoleAssignmentRepository[IO])
 }

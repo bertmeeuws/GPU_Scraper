@@ -12,5 +12,5 @@ case class RoleAssignment(userId: Long, roleId: Long)
 trait RoleAssignmentRepository[F[_]] {
   def findRoleAssignmentByUserId(userId: Long): F[List[RoleAssignment]]
 
-  def findRoleAssignmentsByRoleId(roleId: String): F[List[RoleAssignment]]
+  def findRoleAssignmentsByRoleId(roleId: Long): F[List[RoleAssignment]]
 }
