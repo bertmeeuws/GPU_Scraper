@@ -16,7 +16,8 @@ object Jwt {
     val start = """[""""
     val end   = """"]"""
 
-    val json = if (roles.isEmpty) "[]" else List("Admin", "User", "Mod").mkString(start, """","""", end)
+    val json =
+      if (roles.isEmpty) "[]" else roles.map(_.toString) mkString (start, """","""", end)
 
     val claim = JwtClaim(
       content = s"""{

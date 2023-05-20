@@ -6,7 +6,7 @@ trait RoleRepository[F[_]] {
   def create(userId: Long, roleId: Long): F[Long]
   def findRoleId(role: Role): F[Long]
 
-  def findRoleById(roleId: Long): F[Role]
+  def findRoleById(roleId: Long): F[Option[Role]]
 }
 
 case class RoleAssignment(userId: Long, roleId: Long)

@@ -34,8 +34,9 @@ object Auth {
 
         req.as[User].flatMap { user =>
           authService.login(user.username, user.password).flatMap {
-            case Some(userId) => {
-              roleService.getRolesForUser(userId.toLong).flatMap { roles =>
+            case Some(user) => {
+              IO.println(s"User: $user")
+              roleService.getRolesForUser(user.id).flatMap { roles =>
                 {
                   if (roles.isEmpty) BadRequest("Invalid username or password".asJson)
                   else {
