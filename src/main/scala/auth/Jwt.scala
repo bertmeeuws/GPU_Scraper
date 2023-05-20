@@ -1,13 +1,9 @@
 package scala.auth
 
 import cats.effect.IO
-import cats.{ Applicative, Functor, Monad }
-import dev.profunktor.auth._
 import dev.profunktor.auth.jwt._
 import pdi.jwt._
 import com.scala.repositories._
-
-import scala.reflect.internal.util.NoSourceFile.content
 
 trait Jwt {
   def createToken(username: String): String
@@ -17,10 +13,15 @@ trait Jwt {
 
 object Jwt {
   def createToken(username: String, roles: List[Role]): IO[String] = {
+    val start = """[""""
+    val end   = """"]"""
+
+    val json = if (roles.isEmpty) "[]" else List("Admin", "User", "Mod").mkString(start, """","""", end)
+
     val claim = JwtClaim(
       content = s"""{
          "username": "$username",
-         "role": ["Admin"]
+         "role": ${json}
          }""".stripMargin,
       expiration = Some((System.currentTimeMillis() / 1000 + 3600).toLong)
     )

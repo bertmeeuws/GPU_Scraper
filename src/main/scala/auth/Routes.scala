@@ -32,34 +32,38 @@ object Auth {
         val authService = new AuthService(repositories.userRepository)
         val roleService = new RoleService(repositories.roleRepository, repositories.roleAssignmentRepository)
 
-        for {
-          user   <- req.as[User]
-          userId <- authService.login(user.username, user.password)
-          roles  <- roleService.getRolesForUser(userId.get.toLong)
-          token  <- Jwt.createToken(user.username, roles)
-          response <- (userId, roles) match {
-            case (Some(x), r) => Ok(JWT(token).asJson)
-            case (_, _)       => BadRequest("Invalid username or password".asJson)
+        req.as[User].flatMap { user =>
+          authService.login(user.username, user.password).flatMap {
+            case Some(userId) => {
+              roleService.getRolesForUser(userId.toLong).flatMap { roles =>
+                {
+                  if (roles.isEmpty) BadRequest("Invalid username or password".asJson)
+                  else {
+                    Jwt.createToken(user.username, roles).flatMap { token =>
+                      Ok(JWT(token).asJson)
+                    }
+                  }
+                }
+              }
+            }
+            case None => BadRequest("Invalid username or password".asJson)
           }
-        } yield response
+        }
       }
 
       case req @ POST -> Root / "auth" / "register" => {
         val userService = UserService(repositories.userRepository)
+        val roleService = new RoleService(repositories.roleRepository, repositories.roleAssignmentRepository)
 
-        for {
-          _      <- Logger.log(s"""Starting to create user""")
-          user   <- req.as[User]
-          _      <- Logger.log(s"""User: ${user.username}""")
-          result <- userService.create(user.username, user.password)
-          response <- result match {
-            case Right(x) => Ok(JWT(x).asJson)
-            case Left(x)  => BadRequest(x.asJson)
+        req.as[User].flatMap { user =>
+          {
+            userService.create(user.username, user.password).flatMap {
+              case Right(x) => Ok(JWT(x).asJson)
+              case Left(x)  => BadRequest(x.asJson)
+            }
           }
-        } yield response
-
+        }
       }
-
     }
   }
 }
