@@ -54,7 +54,6 @@ object Auth {
 
       case req @ POST -> Root / "auth" / "register" => {
         val userService = UserService(repositories.userRepository)
-        val roleService = new RoleService(repositories.roleRepository, repositories.roleAssignmentRepository)
 
         req.as[User].flatMap { user =>
           {
